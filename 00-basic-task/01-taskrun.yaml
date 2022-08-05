@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: hello-world-taskrun-
+  namespace: tekton-hub
+spec:
+  taskRef:
+    name: hello-world-task
+    kind: ClusterTask
+  params:
+    - name: message
+      value: "Hello Tekton User"

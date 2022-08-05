@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: hello-world-task
+spec:
+  params:
+    - name: message
+      description: Message you want to print
+      default: "Hello world"
+  steps:
+    - name: print-message
+      image: alpine
+      command:
+        - /bin/sh
+      args: ["-c", "echo $(params.message)"]
+    - name: print-script
+      image: ubuntu
+      script: |
+        #!/usr/bin/env bash
+
+        echo "$(params.message)"
+        uname -a

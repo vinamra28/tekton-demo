@@ -1,0 +1,42 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: maven-build
+spec:
+  params:
+  - name: repo-url
+    type: string
+  - name: revision
+  - name: goals
+    type: array
+  workspaces:
+    - name: source-code
+    - name: maven-settings
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: "$(params.repo-url)"
+        - name: revision
+          value: "$(params.revision)"
+        - name: deleteExisting
+          value: "true"
+      workspaces:
+        - name: output
+          workspace: source-code
+    - name: run-maven
+      taskRef:
+        name: maven
+      runAfter:
+        - fetch-repository
+      params:
+        - name: GOALS
+          value:
+          - "$(params.goals)"
+      workspaces:
+        - name: source
+          workspace: source-code
+        - name: maven-settings
+          workspace: maven-settings
